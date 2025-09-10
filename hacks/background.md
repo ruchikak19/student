@@ -4,7 +4,7 @@ title: Background with Object
 description: Use JavaScript to have an in motion background.
 sprite: images/platformer/sprites/flying-ufo.png #this directs code to the background file we want to use
 background: images/platformer/backgrounds/alien_planet1.jpg #shows element we want to display
-permalink: /background
+permalink: /background #creates link that background can be viewed at
 ---
 
 <canvas id="world"></canvas>
