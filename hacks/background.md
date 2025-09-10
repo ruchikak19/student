@@ -2,14 +2,15 @@
 layout: base
 title: Background with Object
 description: Use JavaScript to have an in motion background.
-sprite: images/platformer/sprites/flying-ufo.png
-background: images/platformer/backgrounds/alien_planet1.jpg
+sprite: images/platformer/sprites/flying-ufo.png #this directs code to the background file we want to use
+background: images/platformer/backgrounds/alien_planet1.jpg #shows element we want to display
 permalink: /background
 ---
 
 <canvas id="world"></canvas>
 
 <script>
+  //configure background
   const canvas = document.getElementById("world");
   const ctx = canvas.getContext('2d');
   const backgroundImg = new Image();
@@ -29,7 +30,7 @@ permalink: /background
 
   function startGameWorld() {
     if (imagesLoaded < 2) return;
-
+//code for game object
     class GameObject {
       constructor(image, width, height, x = 0, y = 0, speedRatio = 0) {
         this.image = image;
