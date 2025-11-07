@@ -1,9 +1,10 @@
 ---
 layout: post
 title: Ruchika Kench Trimester 1 Progress
+categories: ['DevOps']
 comments: false
+breadcrumb: True
 permalink: /tri1progress/
-date: 2025-11-03
 description: Blog posts which highlights my progress in Tools & Setup, Lessons, and Final Project
 ---
 

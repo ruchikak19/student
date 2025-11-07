@@ -1,9 +1,10 @@
 ---
 layout: post
 title: Final Quiz Corrections and Progress
+categories: ['DevOps']
 comments: false
+breadcrumb: True
 permalink: /finalquizcorrections/
-date: 2025-11-03
 ---
 
 # Tools and Set-Up
