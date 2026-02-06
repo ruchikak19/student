@@ -8,8 +8,7 @@ permalink: /indiv_skillB_blog/
 date: 2026-02-06
 ---
 
-# Badges Backend — AP CSP Performance Task (Skill B) Ruchika Kench
-
+## Badges Backend — AP CSP Performance Task (Skill B) Ruchika Kench
 ## Project Overview
 This project has a badge achievement system using a transactional database.
 Users earn badges as they progress, and the system records, retrieves, and analyzes badge data using a many-to-many relationship.
