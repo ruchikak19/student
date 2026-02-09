@@ -138,6 +138,26 @@ current_user = g.current_user
 - current_user identifies which user receives the badge  
 These parameters allow the procedure to be reused for all users and badges.
 
+### RESTful Sequence
+**HTTP Method & Endpoint:**
+- `POST /api/badges/award`
+
+**Request:**
+- Authorization header with token required
+- JSON body with badge_id
+
+**Response (Success):**
+- **Status Code:** 200 OK
+- **Body:** JSON with success flag, message, and new_badge flag
+
+**Response (Duplicate):**
+- **Status Code:** 200 OK
+- **Body:** JSON with new_badge set to False
+
+**Response (Error):**
+- **Status Code:** 400 Bad Request
+- **Body:** JSON with error message
+
 ---
 
 ## Algorithm Explanation (Sequence, Selection, Iteration)
@@ -150,6 +170,7 @@ badge = Badge.query.filter_by(
 ```
 - Retrieves badge metadata from the database.
 - If the badge does not exist, the program stops.
+- **Returns:** Badge object or None
 
 ---
 
@@ -162,6 +183,7 @@ if not badge:
 ```
 - Boolean condition checks whether the badge exists.
 - This prevents invalid database operations.
+- **Returns:** Error response or continues to next step
 
 ---
 
@@ -181,6 +203,7 @@ if existing:
 ```
 
 - Ensures each badge can only be earned once which ensures database accuracy.
+- **Returns:** Success response with new_badge=False if duplicate is found
 
 ---
 
@@ -195,6 +218,7 @@ user_badge.create()
 
 - Inserts a new row into the user_badges table.
 - This represents a successful badge award (shown by a popup in the FE)
+- **Returns:** None (creates database entry)
 
 ---
 
@@ -214,6 +238,15 @@ for badge in all_badges:
 
 - The loop checks each badge dynamically (validity of badge awarded)
 - Works regardless of how many badges exist.
+- **Returns:** progress list with all badges and earned status
+
+### RESTful Sequence (Get Progress)
+**HTTP Method & Endpoint:**
+- `GET /api/badges/progress`
+
+**Response:**
+- **Status Code:** 200 OK
+- **Body:** JSON with progress array containing all badges and earned status
 
 ---
 
