@@ -1,0 +1,234 @@
+---
+permalink: /titanic/predict
+Title: Titanic Survival Predictor
+---
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:url("https://upload.wikimedia.org/wikipedia/commons/f/fd/RMS_Titanic_3.jpg") center/cover no-repeat fixed;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+.container{
+  background:rgba(0,0,0,0.7);
+  padding:40px;
+  border-radius:12px;
+  text-align:center;
+  color:white;
+  width:420px;
+}
+
+h2{
+  margin-bottom:20px;
+}
+
+input,select{
+  width:90%;
+  padding:10px;
+  margin:8px 0;
+  border-radius:6px;
+  border:none;
+}
+
+button{
+  margin-top:12px;
+  padding:10px 20px;
+  font-size:16px;
+  border:none;
+  border-radius:6px;
+  background:#1e90ff;
+  color:white;
+  cursor:pointer;
+}
+
+button:hover{
+  background:#187bcd;
+}
+
+#result{
+  margin-top:20px;
+  font-size:18px;
+}
+
+/* popup modal */
+
+.modal{
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.7);
+  justify-content:center;
+  align-items:center;
+}
+
+.modal-content{
+  background:white;
+  color:black;
+  padding:25px;
+  border-radius:10px;
+  width:350px;
+  text-align:center;
+  position:relative;
+}
+
+.close{
+  position:absolute;
+  right:10px;
+  top:8px;
+  font-size:22px;
+  cursor:pointer;
+}
+
+.importance{
+  text-align:left;
+  margin-top:10px;
+}
+</style>
+
+
+<div class="container">
+
+<h2>Titanic Survival Predictor</h2>
+
+<form id="predictForm">
+
+<input type="text" id="name" placeholder="Name">
+
+<label>Class</label>
+<select id="pclass">
+<option value="1">1</option>
+<option value="2">2</option>
+<option value="3">3</option>
+</select>
+
+<label>Sex</label>
+<select id="sex">
+<option value="male">male</option>
+<option value="female">female</option>
+</select>
+
+<input type="number" id="age" placeholder="Age">
+<input type="number" id="sibsp" placeholder="Siblings/Spouse">
+<input type="number" id="parch" placeholder="Parents/Children">
+<input type="number" id="fare" placeholder="Fare">
+
+<label>Embarked</label>
+<select id="embarked">
+<option value="S">S</option>
+<option value="C">C</option>
+<option value="Q">Q</option>
+</select>
+
+<label>Alone</label>
+<select id="alone">
+<option value="true">True</option>
+<option value="false">False</option>
+</select>
+
+<button type="submit">Predict</button>
+
+</form>
+
+<p id="result"></p>
+
+</div>
+
+
+<!-- FEATURE IMPORTANCE POPUP -->
+
+<div class="modal" id="importanceModal">
+
+<div class="modal-content">
+
+<span class="close" id="closeModal">&times;</span>
+
+<h3>What Influenced This Prediction?</h3>
+
+<div class="importance" id="importanceList"></div>
+
+</div>
+
+</div>
+
+
+<script>
+
+document.getElementById("predictForm").addEventListener("submit", async function(e){
+
+e.preventDefault()
+
+const data = {
+
+name:document.getElementById("name").value,
+pclass:parseInt(document.getElementById("pclass").value),
+sex:document.getElementById("sex").value,
+age:parseFloat(document.getElementById("age").value),
+sibsp:parseInt(document.getElementById("sibsp").value),
+parch:parseInt(document.getElementById("parch").value),
+fare:parseFloat(document.getElementById("fare").value),
+embarked:document.getElementById("embarked").value,
+alone:document.getElementById("alone").value==="true"
+
+}
+
+const response = await fetch("http://localhost:8587/api/titanic/predict",{
+
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(data)
+
+})
+
+const result = await response.json()
+
+document.getElementById("result").innerText=
+`Survival: ${(result.survive*100).toFixed(2)}%
+Death: ${(result.die*100).toFixed(2)}%`
+
+
+/* fetch feature importance */
+
+try{
+
+const imp = await fetch("http://localhost:8587/api/titanic/importance")
+const importance = await imp.json()
+
+const container = document.getElementById("importanceList")
+
+container.innerHTML=""
+
+Object.entries(importance)
+.sort((a,b)=>b[1]-a[1])
+.forEach(([feature,val])=>{
+
+const row=document.createElement("div")
+row.innerText=`${feature}: ${(val*100).toFixed(1)}% influence`
+container.appendChild(row)
+
+})
+
+document.getElementById("importanceModal").style.display="flex"
+
+}catch(err){
+console.log("importance fetch failed")
+}
+
+})
+
+/* close modal */
+
+document.getElementById("closeModal").onclick=function(){
+document.getElementById("importanceModal").style.display="none"
+}
+
+</script>
